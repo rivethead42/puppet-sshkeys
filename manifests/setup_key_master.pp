@@ -13,9 +13,9 @@ define sshkeys::setup_key_master (
   include sshkeys::var
   Exec { path => "/usr/bin:/usr/sbin:/bin:/sbin" }
   File {
-    owner => puppet,
-    group => puppet,
-    mode  => 600,
+    owner => 'pe-puppet',
+    group => 'pe-puppet',
+    mode  => '0600',
   }
 
   $keydir = "${sshkeys::var::keymaster_storage}/${title}"
@@ -24,12 +24,12 @@ define sshkeys::setup_key_master (
   file {
     "$keydir":
       ensure => directory,
-      mode   => 644;
+      mode   => '0644';
     "$keyfile":
       ensure => $ensure;
     "${keyfile}.pub":
       ensure => $ensure,
-      mode   => 644;
+      mode   => '0644';
   }
 
   if $ensure == "present" {
@@ -77,8 +77,8 @@ define sshkeys::setup_key_master (
     # the key length.
     exec { "Create key $title: $keytype, $length bits":
       command => "ssh-keygen -t ${keytype} -b ${length} -f ${keyfile} -C \"${keytype} ${length}\" -N \"\"",
-      user    => "puppet",
-      group   => "puppet",
+      user    => "pe-puppet",
+      group   => "pe-puppet",
       creates => $keyfile,
       require => File[$keydir],
       before  => File[$keyfile, "${keyfile}.pub"],

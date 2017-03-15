@@ -11,7 +11,7 @@ define sshkeys::set_client_key_pair (
   File {
     owner   => $user,
     group   => $group ? { '' => $user, default => $group },
-    mode    => 600,
+    mode    => '0600',
     require => [ User[$user], File[$home]],
   }
 
@@ -31,7 +31,7 @@ define sshkeys::set_client_key_pair (
       "${key_tgt_file}.pub":
         ensure  => $ensure,
         content => "$keytype $modulus $title\n",
-        mode    => 644;
+        mode    => '0644';
     }
   } else {
     notify { "Private key file $key_src_file for key $title not found on keymaster; skipping ensure => present": }
